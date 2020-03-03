@@ -2,6 +2,7 @@ package scraper.kijiji;
 
 import java.io.IOException;
 import java.util.function.Consumer;
+import logic.CategoryLogic;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -37,33 +38,40 @@ public class Kijiji {
         return this;
     }
 
-    /**
-     * 
-     * @param callback
-     * @return
-     * @deprecated
-     */
-    @Deprecated
-    public Kijiji proccessItemsNoneBuilder(Consumer<BadKijijiItem> callback) {
-//        itemElements.forEach((Element element) -> {
-//            callback.accept( new ItemBuilder().setElement(element).build());
-//        });
+
+    public Kijiji proccessItems(Consumer<KijijiItem> callback) {
+        itemElements.forEach((Element element) -> {
+            callback.accept( new ItemBuilder().setElement(element).build());
+        });
+        //for (Element element : itemElements) {
+          //   callback.accept( new ItemBuilder().setElement(element).build());
+        //}
+        return this;
+    }
+
+      public Kijiji proccessItemsnNoneBuilder(Consumer<KijijiItem> callback) {
+      //  itemElements.forEach((Element element) -> {
+        //    callback.accept( new ItemBuilder().setElement(element).build());
+       // });
         for (Element element : itemElements) {
-            callback.accept( new BadKijijiItem(element));
+             callback.accept( new ItemBuilder().setElement(element).build());
         }
         return this;
     }
 
+
+
     public static void main(String[] args) throws IOException {
         
-        Consumer<BadKijijiItem> saveItemsNoneBuilder = (BadKijijiItem item) -> {
+        Consumer<KijijiItem> saveItemsNoneBuilder = (KijijiItem item) -> {
             System.out.println(item);
         };
 
         Kijiji kijiji = new Kijiji();
         
-        kijiji.downloadDefaultPage();
+        kijiji.downloadPage(new CategoryLogic().getWithId(1).getUrl());
         kijiji.findAllItems();
-        kijiji.proccessItemsNoneBuilder(saveItemsNoneBuilder);
+        kijiji.proccessItems(saveItemsNoneBuilder);
+       
     }
 }

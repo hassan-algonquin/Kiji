@@ -1,5 +1,6 @@
 package logic;
 
+import common.ValidationException;
 import dal.CategoryDAL;
 import entity.Category;
 import java.util.Arrays;
@@ -47,13 +48,30 @@ public class CategoryLogic extends GenericLogic<Category,CategoryDAL>{
 
     @Override
     public Category createEntity(Map<String, String[]> parameterMap) {
-        Category image = new Category();
+        Category category = new Category();
         if(parameterMap.containsKey(ID)){
-            image.setId(Integer.parseInt(parameterMap.get(ID)[0]));
+            category.setId(Integer.parseInt(parameterMap.get(ID)[0]));
         }
-        image.setTitle(parameterMap.get(TITLE)[0]);
-        image.setUrl(parameterMap.get(URL)[0]);
-        return image;
+        
+        String _title =parameterMap.get(TITLE)[0];
+        if(_title==null || _title.isEmpty())
+            throw new ValidationException("The title must exist");
+        
+        // Title varchar(255)
+        if (_title.length()>255 )
+            throw new ValidationException("Title can't be greater than 255 characters");
+         category.setTitle(parameterMap.get(TITLE)[0]);
+         
+        String _url =parameterMap.get(URL)[0];
+        if(_url==null || _url.isEmpty())
+            throw new ValidationException("The url must exist");
+        
+        // Title varchar(255)
+        if (_url.length()>255 )
+            throw new ValidationException("Url can't be greater than 255 characters");
+         
+        category.setUrl(parameterMap.get(URL)[0]);
+        return category;
     } 
 
     @Override

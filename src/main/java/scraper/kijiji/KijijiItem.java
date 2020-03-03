@@ -24,42 +24,79 @@ public final class KijijiItem {
      
     void setId(String id){
     this.id=id;    
-    } 
+    }
+    
+    public String getId(){
+        return id;
+        }
+        
     void setUrl(String url){
         this.url=url;
+    }
+    
+    public String getUrl(){
+        return url;
     }
     
     void setImageUrl (String imageUrl){
         this.imageUrl=imageUrl;
     }
     
+    public String getImageUrl(){
+     return imageUrl;   
+    }
+    
     void setImageName (String imageName){
         this.imageName=imageName;
     }
     
+    public String getImageName(){
+        return imageName;
+    }
+            
     void setPrice (String price){
         this.price =price;
+    }
+    
+    public String getPrice(){
+        return price;
     }
     
     void setTitle (String title){
         this.title=title;
         }
  
+    public String getTitle(){
+        return title;
+    }
+    
     void setDate(String date){
         this.date=date;
         
+    }
+    
+    public String getDate(){
+        return date;
     }
     
     void setLocation (String location){
         this.location = location;
     }
     
+    public String getLocation(){
+        return location;
+    }
+    
     void setDescription (String description){
         this.description =description;
     }
     
+    public String getDescription(){
+     return description;   
+    }
     
-  /*  @Override
+    
+    @Override
     public int hashCode() {
         int hash = 7;
         hash = 11 * hash + Objects.hashCode(getId());
@@ -78,12 +115,12 @@ public final class KijijiItem {
             return false;
         }
         final KijijiItem other = (KijijiItem) obj;
-        return Objects.equals(setId(id), other.setId(id));
+        return Objects.equals(getId(), other.getId());
     }
 
     @Override
     public String toString() {
         return String.format("[id:%s, image_url:%s, image_name:%s, price:%s, title:%s, date:%s, location:%s, description:%s]",
                 getId(), getImageUrl(), getImageName(), getPrice(), getTitle(), getDate(), getLocation(), getDescription());
-    }*/
+    }
 }

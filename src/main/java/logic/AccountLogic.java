@@ -1,5 +1,6 @@
 package logic;
 
+import common.ValidationException;
 import dal.AccountDAL;
 import entity.Account;
 import java.util.Arrays;
@@ -9,7 +10,7 @@ import java.util.function.Supplier;
 
 /**
  *
- * @author Shariar (Shawn) Emami
+ * @author 
  */
 public class AccountLogic extends GenericLogic<Account,AccountDAL>{
     
@@ -107,8 +108,28 @@ public class AccountLogic extends GenericLogic<Account,AccountDAL>{
         if(parameterMap.containsKey(ID)){
             account.setId(Integer.parseInt(parameterMap.get(ID)[0]));
         }
+               
+        String _name =parameterMap.get(DISPLAY_NAME)[0];
+        if(_name==null || _name.isEmpty())
+            throw new ValidationException("Display name must exist");
+        
+        // Display name varchar(45)
+        if (_name.length()>45 )
+            throw new ValidationException("Display name can't be greater than 45 characters");
         account.setDisplayName(parameterMap.get(DISPLAY_NAME)[0]);
+ 
+        String _user =parameterMap.get(USER)[0];
+        if(_user==null || _user.isEmpty())
+            throw new ValidationException("User must exist");
+        if (_user.length()>45 )
+            throw new ValidationException("User can't be greater than 45 characters");
         account.setUser(parameterMap.get(USER)[0]);
+        
+        String _pass =parameterMap.get(PASSWORD)[0];
+        if(_pass==null || _pass.isEmpty())
+            throw new ValidationException("Password must exist");
+        if (_pass.length()>45 )
+            throw new ValidationException("Password can't be greater than 45 characters");
         account.setPassword(parameterMap.get(PASSWORD)[0]);
         return account;
     } 

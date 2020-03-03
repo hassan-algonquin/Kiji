@@ -2,10 +2,18 @@ package logic;
 
 import dal.ItemDAL;
 import entity.Item;
+import entity.Category;
+import entity.Image;
+import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -39,7 +47,8 @@ public class ItemLogic extends GenericLogic<Item,ItemDAL>{
     }
 
     
-    public List<Item> getWithPrice( String price){
+    public List<Item> getWithPrice( BigDecimal price){
+    //public List<Item> getWithPrice( BigDecimal price){
         return get(()->dao().findByPrice(price));
     }
 
@@ -64,7 +73,7 @@ public class ItemLogic extends GenericLogic<Item,ItemDAL>{
     public Item getWithUrl( String url){
         return get(()->dao().findByUrl(url));
     }
-    public List<Item> getWithCategory( String categoryId){
+    public List<Item> getWithCategory( int categoryId){
         return get(()->dao().findByCategory(categoryId));
     }
     
@@ -73,36 +82,63 @@ public class ItemLogic extends GenericLogic<Item,ItemDAL>{
     
 
     
-  /*  @Override
+    @Override
     public List<Item> search( String search){
         return get(()->dao().findContaining(search));
-    }*/
+    }
 
+    
+    
     @Override
     public Item createEntity(Map<String, String[]> parameterMap) {
+      
         Item item = new Item();
-        if(parameterMap.containsKey(CATEGORY_ID)){
-            item.setId(Integer.parseInt(parameterMap.get(CATEGORY_ID)[0]));
-        }
+        if(parameterMap.containsKey(ID)){
+            item.setId(Integer.parseInt(parameterMap.get(ID)[0]));}
         item.setDescription(parameterMap.get(DESCRIPTION)[0]);
-//        item.setCategory(parameterMap.get(CATEGORY_ID)[0]);
-  //      item.setImage(parameterMap.get(IMAGE_ID)[0]);
-    //    item.setLocation(parameterMap.get(LOCATION));
+     
+
+          String testPrice=parameterMap.get(PRICE)[0].replace("$", "").trim();
+          testPrice=testPrice.replace(",", "").trim();
+           try{
+           item.setPrice( new BigDecimal (testPrice));
+           }
+           catch(Exception e){
+             item.setPrice( new BigDecimal (0));
+           }
+
+        item.setLocation(parameterMap.get(LOCATION)[0]);
+        item.setTitle(parameterMap.get(TITLE)[0]);
+        item.setUrl(parameterMap.get(URL)[0]);
+
+    
+  
+         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        Date date = new Date();
+         try {
+            item.setDate(dateFormat.parse(parameterMap.get(DATE)[0]));
+        } catch (ParseException e) {
+          item.setDate(date);
+        }    
+ 
+           
+       
         return item;
     } 
 
     @Override
     public List<String> getColumnNames() {
-        return Arrays.asList("Description", "Category Id", "Image Id", "Location","Price","Title","Date","Url","Id");
+        return Arrays.asList("Id","Title","Price", "Location","Date","Url","Description", "Category Id", "Image Id");
     }
 
     @Override
     public List<String> getColumnCodes() {
-        return Arrays.asList(DESCRIPTION, CATEGORY_ID, IMAGE_ID, LOCATION,PRICE,TITLE,DATE,URL,ID);
+        return Arrays.asList(ID,TITLE,PRICE,LOCATION,DATE,URL,DESCRIPTION, CATEGORY_ID, IMAGE_ID);
     }
 
     @Override
     public List<?> extractDataAsList( Item e) {
-        return Arrays.asList(e.getDescription(), e.getCategory(),e.getImage(),e.getLocation(),e.getPrice(),e.getTitle(),e.getUrl(),e.getId());
+        return Arrays.asList(e.getId(),e.getTitle(),e.getPrice(),e.getLocation(),e.getDate(),e.getDescription(), e.getUrl(),e.getCategory(),e.getImage());
     }
+    
 }

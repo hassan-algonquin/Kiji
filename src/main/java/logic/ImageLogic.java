@@ -59,7 +59,7 @@ public class ImageLogic extends GenericLogic<Image,ImageDAL>{
         }
         image.setPath(parameterMap.get(PATH)[0]);
         image.setName(parameterMap.get(NAME)[0]);
-        image.setPath(parameterMap.get(URL)[0]);
+        image.setUrl(parameterMap.get(URL)[0]);
         return image;
     } 
 

@@ -42,19 +42,23 @@ public class Item implements Serializable {
     @Id
     @Basic(optional = false)
     @Column(name = "id")
+    @NotNull
     private Integer id;
 
     @Column(name = "price")
     private BigDecimal price;
     @Basic(optional = false)
-    @NotNull
+//    @NotNull
     @Size(min = 1, max = 255)
+  
     @Column(name = "title")
     private String title;
+
     @Column(name = "date")
     @Temporal(TemporalType.DATE)
     private Date date;
     @Size(max = 45)
+
     @Column(name = "location")
     private String location;
     @Basic(optional = false)
@@ -70,6 +74,7 @@ public class Item implements Serializable {
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     @OneToOne(optional = false, fetch = FetchType.LAZY)
     private Category category;
+
     @JoinColumn(name = "image_id", referencedColumnName = "id")
     @OneToOne(optional = false, fetch = FetchType.LAZY)
     private Image image;

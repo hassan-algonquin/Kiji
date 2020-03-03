@@ -4,11 +4,17 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import entity.Account;
 import common.TomcatStartUp;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import static logic.AccountLogic.DISPLAY_NAME;
+import static logic.AccountLogic.ID;
+import static logic.AccountLogic.PASSWORD;
+import static logic.AccountLogic.USER;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -93,4 +99,80 @@ class AccountLogicTest {
         assertEquals(testAccount.getUser(), returnedAccount.getUser());
         assertEquals(testAccount.getPassword(), returnedAccount.getPassword());
     }
+    
+    @Test
+    final void testGetAccountWithDisplayName(){
+    List<Account> account = logic.getAll();
+    Account testAccount =account.get(0);
+    Account returnedAccount=logic.getAccountWithDisplayName(testAccount.getDisplayName() );
+    assertEquals(testAccount.getId(),returnedAccount.getId());
+    assertEquals(testAccount.getDisplayName(),returnedAccount.getDisplayName());
+    assertEquals(testAccount.getUser(),returnedAccount.getUser());
+    assertEquals(testAccount.getPassword(),returnedAccount.getPassword());
+
+    }
+    
+@Test
+    final void testGetAccountWithUser() {
+        List<Account> list = logic.getAll();
+        Account testAccount = list.get(0);
+        Account returnedAccount = logic.getAccountWithUser(testAccount.getUser());
+        assertEquals(testAccount.getId(), returnedAccount.getId());
+        assertEquals(testAccount.getDisplayName(), returnedAccount.getDisplayName());
+        assertEquals(testAccount.getUser(), returnedAccount.getUser());
+        assertEquals(testAccount.getPassword(), returnedAccount.getPassword());
+    }
+
+
+    @Test
+    final void testGetAccountWithPassword() {
+        List<Account> list = logic.getAll();
+        Account testAccount = list.get(0);
+        
+        List<Account> returnedAccount = logic.getAccountsWithPassword(testAccount.getPassword());
+        for(Account ee : returnedAccount){
+        assertEquals(testAccount.getId(), ee.getId());
+        assertEquals(testAccount.getDisplayName(), ee.getDisplayName());
+        assertEquals(testAccount.getUser(), ee.getUser());
+        assertEquals(testAccount.getPassword(), ee.getPassword());
+        }
+        }
+
+@Test
+    final void testgetAccountWith() {
+        List<Account> list = logic.getAll();
+        Account testAccount = list.get(0);
+        Account returnedAccount = logic.getAccountWith(testAccount.getUser(),testAccount.getPassword());
+        assertEquals(testAccount.getId(), returnedAccount.getId());
+        assertEquals(testAccount.getDisplayName(), returnedAccount.getDisplayName());
+        assertEquals(testAccount.getUser(), returnedAccount.getUser());
+        assertEquals(testAccount.getPassword(), returnedAccount.getPassword());
+    }
+    
+    
+
+    @Test
+    final void testGetColumnNames() {
+        List<String> list = logic.getColumnNames();
+        List<?> hardCodedList = Arrays.asList("ID", "Display Name", "User", "Password");
+        assertIterableEquals(list, hardCodedList);
+    }
+    
+    @Test
+    final void testGetColumnCodes() {
+        List<String> list = logic.getColumnCodes();
+        List<?> hardCodedList = Arrays.asList(ID, DISPLAY_NAME, USER, PASSWORD);
+        assertIterableEquals(list, hardCodedList);
+    }
+    
+    @Test
+    final void testGxtractDataAsList() {
+      List<Account> account = logic.getAll();
+      Account accounts = account.get(0);
+        List<?> list = logic.extractDataAsList(accounts);
+        List<?> hardCodedList = Arrays.asList(accounts.getId(),accounts.getDisplayName(),accounts.getUser(),accounts.getPassword());
+        assertIterableEquals(list, hardCodedList);
+    }
+    
+    
 }

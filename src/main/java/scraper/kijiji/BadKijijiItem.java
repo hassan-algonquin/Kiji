@@ -36,18 +36,45 @@ public final class BadKijijiItem {
         return element.attr(ATTRIBUTE_ID).trim();
     }
 
-    public String getImageUrl() {
+    
+ /*   public String getImageUrl() {
         Elements elements = element.getElementsByClass(ATTRIBUTE_IMAGE);
         if(elements.isEmpty())
             return "";
         return elements.get(0).child(0).attr(ATTRIBUTE_IMAGE_SRC).trim();
-    }
+    }*/
+    private String getImageName() {
+        Elements elements = element.getElementsByClass(ATTRIBUTE_IMAGE);
+        if (elements.isEmpty()) {
+            return "";
+        }
+        String image = elements.get(0).child(0).attr(ATTRIBUTE_IMAGE_NAME).trim();
+        if (image.isEmpty()) {
+            image = elements.get(0).child(0).child(1).attr(ATTRIBUTE_IMAGE_NAME).trim();
 
-    public String getImageName() {
+        }
+        return image;
+    }
+    /*public String getImageName() {
         Elements elements = element.getElementsByClass(ATTRIBUTE_IMAGE);
         if(elements.isEmpty())
             return "";
          return elements.get(0).child(0).attr(ATTRIBUTE_IMAGE_NAME).trim();
+    }*/
+    
+       private String getImageUrl() {
+        Elements elements = element.getElementsByClass(ATTRIBUTE_IMAGE);
+        if (elements.isEmpty()) {
+            return "";
+        }
+        String image = elements.get(0).child(0).attr(ATTRIBUTE_IMAGE_SRC).trim();
+        if (image.isEmpty()) {
+            image = elements.get(0).child(0).attr("src").trim();
+            if (image.isEmpty()) {
+                image = elements.get(0).child(0).child(1).attr(ATTRIBUTE_IMAGE_SRC).trim();
+            }
+        }
+        return image;
     }
 
     public String getPrice() {

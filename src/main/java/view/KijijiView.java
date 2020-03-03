@@ -46,44 +46,71 @@ public class KijijiView extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
+            out.println("<h1>Servlet KijijiView at " + request.getContextPath() + "</h1>");
+            out.println("<table style=\"margin-left: auto; margin-right: auto;\" border=\"1\">");
+
             /* TODO output your page here. You may use following sample code. */
+            ItemLogic logic = new ItemLogic();
+            List<Item> entities = logic.getAll();
+            for (Item e : entities) {
+                //for other tables replace the code bellow with
+                //extractDataAsList in a loop to fill the data.
+            
+                
+                
+            
+            
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
             out.println("<title>Servlet KijijiView</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet KijijiView at " + request.getContextPath() + "</h1>");
-            out.println("<table style=\"margin-left: auto; margin-right: auto;\" border=\"1\">");
-            out.println("<caption>Category</caption>");
-            //this is an example, for your other tables use getColumnNames from
-            //logic to create headers in a loop.
-            out.println("<tr>");
-            out.println("<th>Title</th>");
-            out.println("<th>Url</th>");
-            out.println("<th>Id</th>");
-            out.println("</tr>");
-
-            ItemLogic logic = new ItemLogic();
-            List<Item> entities = logic.getAll();
-            for (Item e : entities) {
-                //for other tables replace the code bellow with
-                //extractDataAsList in a loop to fill the data.
-                out.printf("<tr><td>%s</td><td>%s</td><td>%s</td></tr>",
-                        logic.extractDataAsList(e).toArray());
-            }
-
-            out.println("<tr>");
-            //this is an example, for your other tables use getColumnNames from
-            //logic to create headers in a loop.
-            out.println("<th>Title</th>");
-            out.println("<th>Url</th>");
-            out.println("<th>Id</th>");
-            out.println("</tr>");
-            out.println("</table>");
+            out.println("<table>");
             
+            out.println("<div class='center-column'>");
+            out.println("<div class='item'>");
+            out.println("<tr><td>");
+            
+            out.println("<div class='image'>");
+            out.printf("<img src=\"image/%s.jpg\" style=\"width: 250px; height: 200px;\" />",e.getId());
+            out.println("</div>");
+            out.println("</td><td>");
+            
+            out.println("<div class='details'>");
+            out.println("<div class='title'>");
+            out.printf("<a href='%s' target='_blank'>%s</a>",e.getUrl(),e.getTitle());
+            out.println("</div>");
+            out.println("<div class='price'>");
+            out.println(e.getPrice());
+            out.println("</div>");
+            out.println("<div class='date'>");
+            out.println(e.getDate());
+            out.println("</div>");
+            out.println("<div class='location'>");
+            out.println(e.getLocation());
+            out.println("</div>");
+            out.println("<div class='description'>");
+        //    out.printf("<script src='https://maps.googleapis.com/maps/api/js?v=3.exp&key=HassanHakim'></script>"
+          //          + "<div style='overflow:hidden;height:332px;width:509px;'>"
+           //         + "<div id='gmap_canvas' style='height:332px;width:509px;'>"
+            //        + "</div><style>#gmap_canvas img{max-width:none!important;background:none!important}</style></div> "
+             //       + "<a href='https://www.add-map.net/'>google map wordpress widget</a>"
+              //      + " <script type='text/javascript' src='https://embedmaps.com/google-maps-authorization/script.js?id=bc5c144279a9c69f2e0ee79f70056f31e240f964'>"
+              //      + "</script><script type='text/javascript'>function init_map(){var myOptions = {zoom:12,center:new google.maps.LatLng(45.3286,-75.7703),mapTypeId: google.maps.MapTypeId.HYBRID};map = new google.maps.Map(document.getElementById('gmap_canvas'), myOptions);marker = new google.maps.Marker({map: map,position: new google.maps.LatLng(45.3286,-75.7703)});infowindow = new google.maps.InfoWindow({content:'<strong></strong><br><br> %s<br>'});google.maps.event.addListener(marker, 'click', function(){infowindow.open(map,marker);});infowindow.open(map,marker);}google.maps.event.addDomListener(window, 'load', init_map);</script>", e.getLocation());
+            out.println(e.getDescription());
+            
+            out.println("</div>");
+            out.println("</div>");
+            out.println("</div>");
+            out.println("</div>");
+            out.println("</td></tr>");
+          
+            out.println("</table>");
+            out.println("<br>");
             out.println("</body>");
             out.println("</html>");
+            }
         }
     }
 
@@ -99,54 +126,52 @@ public class KijijiView extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
-       String mydir = System.getProperty("user.home") + "/KijijImages/";
+        //processRequest(request, response);
+       String mydir = System.getProperty("user.home") + "/KijijiImages/";
        File myfiles = new File(mydir);
        if (!myfiles.exists())
                myfiles.mkdir();
        Category cat = new CategoryLogic().getWithId(1);
+ 
        Kijiji myKijiji = new Kijiji();
-       myKijiji.downloadPage(mydir);
+       myKijiji.downloadPage(cat.getUrl());
        myKijiji.findAllItems();
+       ImageLogic iLogic= new ImageLogic();
        myKijiji.proccessItems(e ->{
-       Image image = new ImageLogic().getWithPath(mydir+ e.getId()+".jpg");
-       Map<String,String[]>imageMap = new HashMap<>();
-       if(image ==null){
-           FileUtility.downloadAndSaveFile(e.getImageUrl(),mydir,e.getId()+".jpg");
+           
+       FileUtility.downloadAndSaveFile(e.getImageUrl(),mydir,e.getId()+".jpg");
+//       if(iLogic.getWithUrl(e.getUrl()).isEmpty()){
+//        
+//       } 
+       
+           Map<String,String[]> itemMap = new HashMap<>();      
+           itemMap.put(ItemLogic.DESCRIPTION, new String[]{e.getDescription()});
+           itemMap.put(ItemLogic.LOCATION, new String[]{e.getLocation()});
+           itemMap.put(ItemLogic.PRICE, new String[]{e.getPrice()});
+           itemMap.put(ItemLogic.URL, new String[]{e.getUrl()});
+           itemMap.put(ItemLogic.TITLE, new String[]{e.getTitle()});
+           itemMap.put(ItemLogic.DATE, new String[]{e.getDate()});
+           itemMap.put(ItemLogic.ID, new String[]{e.getId()});
+           Item item = new ItemLogic().createEntity(itemMap);
+  
+
            String imagePath = mydir +e.getId() +".jpg";
            String imageUrl =e.getImageUrl();
            String imageName=e.getImageName();
+                 
+           Map<String,String[]>imageMap = new HashMap<>();
+           imageMap.put(ImageLogic.PATH, new String[]{mydir +e.getId() +".jpg"});
+           imageMap.put(ImageLogic.NAME, new String[]{e.getImageName()});
+           imageMap.put(ImageLogic.URL, new String[]{e.getImageUrl()});
+           Image image= iLogic.createEntity(imageMap);
            
-           imageMap.put(ImageLogic.PATH, new String[]{imagePath});
-           imageMap.put(ImageLogic.NAME, new String[]{imageName});
-           imageMap.put(ImageLogic.URL, new String[]{imageUrl});
-           
-           image= new ImageLogic().createEntity(imageMap);
-           new ImageLogic().add(image);
-           
-           
-           ItemLogic itemLogic = new ItemLogic();
-           
-           Map<String,String[]> kijijiItemMap = new HashMap<>();
-           kijijiItemMap.put(ItemLogic.DESCRIPTION, new String[]{e.getDescription()});
-           kijijiItemMap.put(ItemLogic.LOCATION, new String[]{e.getLocation()});
-           kijijiItemMap.put(ItemLogic.PRICE, new String[]{e.getPrice()});
-           kijijiItemMap.put(ItemLogic.URL, new String[]{e.getUrl()});
-           kijijiItemMap.put(ItemLogic.TITLE, new String[]{e.getTitle()});
-           kijijiItemMap.put(ItemLogic.DATE, new String[]{e.getDate()});
-           kijijiItemMap.put(ItemLogic.ID, new String[]{e.getId()});
-          
-           
-           Item item = new ItemLogic().createEntity(kijijiItemMap);
-           item.setCategory(cat);
-           item.setImage(image);
-           
-            new ItemLogic().add(item);
-           
-           
-       }
-       
-       
+            if(iLogic.getWithPath(imagePath) ==null){
+            ItemLogic itemLogic = new ItemLogic();
+            iLogic.add(image);
+            item.setCategory(cat);
+            item.setImage(image);
+            itemLogic.add(item);
+         }
        });
        
        processRequest(request,response);
@@ -163,6 +188,8 @@ public class KijijiView extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
+
         processRequest(request, response);
     }
 

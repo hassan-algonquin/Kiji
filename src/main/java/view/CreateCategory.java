@@ -1,8 +1,8 @@
 package view;
 
 import common.ValidationException;
-import entity.Account;
-import logic.AccountLogic;
+import entity.Category;
+import logic.CategoryLogic;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Arrays;
@@ -17,8 +17,8 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Shariar (Shawn) Emami
  */
-@WebServlet(name = "CreateAccount", urlPatterns = {"/CreateAccount"})
-public class CreateAccount extends HttpServlet {
+@WebServlet(name = "CreateCategory", urlPatterns = {"/CreateCategory"})
+public class CreateCategory extends HttpServlet {
 
     private String errorMessage = null;
     
@@ -44,17 +44,14 @@ public class CreateAccount extends HttpServlet {
             out.println("<div style=\"text-align: center;\">");
             out.println("<div style=\"display: inline-block; text-align: left;\">");
             out.println("<form method=\"post\">");
-            out.println("Display Name:<br>");
+            out.println("Category Title:<br>");
             //instead of typing the name of column manualy use the static vraiable in logic
             //use the same name as column id of the table. will use this name to get date
             //from parameter map.
-            out.printf("<input type=\"text\" name=\"%s\" value=\"\"><br>",AccountLogic.DISPLAY_NAME);
+            out.printf("<input type=\"text\" name=\"%s\" value=\"\"><br>",CategoryLogic.TITLE);
             out.println("<br>");
-            out.println("User:<br>");
-            out.printf("<input type=\"text\" name=\"%s\" value=\"\"><br>",AccountLogic.USER);
-            out.println("<br>");
-            out.println("Password:<br>");
-            out.printf("<input type=\"password\" name=\"%s\" value=\"\"><br>",AccountLogic.PASSWORD);
+            out.println("Category Url:<br>");
+            out.printf("<input type=\"text\" name=\"%s\" value=\"\"><br>",CategoryLogic.URL);
             out.println("<br>");
             out.println("<input type=\"submit\" name=\"view\" value=\"Add and View\">");
             out.println("<input type=\"submit\" name=\"add\" value=\"Add\">");
@@ -121,30 +118,37 @@ public class CreateAccount extends HttpServlet {
             throws ServletException, IOException {
         log("POST");
         
-        AccountLogic aLogic = new AccountLogic();
-        String username = request.getParameter( AccountLogic.USER);
-                if(aLogic.getAccountWithUser(username)==null){
-          Map<String,String[]> map = request.getParameterMap();
-            try{
-            Account account = aLogic.createEntity(map);
-            aLogic.add(account);
-          }catch(ValidationException ex){
-          errorMessage= ex.getMessage();
-          log(ex.getMessage(),ex);
+        CategoryLogic cLogic = new CategoryLogic();
+        String categoryTitle = request.getParameter( CategoryLogic.TITLE);
+        String categoryUrl = request.getParameter( CategoryLogic.URL);
+        
+        if (cLogic.getWithTitle(categoryTitle)==null){
+            if (cLogic.getWithUrl(categoryUrl)==null){
+            Map<String,String[]> map = request.getParameterMap();
+                try{
+            Category category = cLogic.createEntity(map);
+            cLogic.add(category);
+                }catch(ValidationException ex){
+                errorMessage= ex.getMessage();
+                log(ex.getMessage(),ex);
           
                   }
+            }else{
+            //if duplicate print the error message
+            errorMessage = "Url: \"" + categoryUrl + "\" already exists";
+            }
         
         }else{
             //if duplicate print the error message
-            errorMessage = "Username: \"" + username + "\" already exists";
+            errorMessage = "Title: \"" + categoryTitle + "\" already exists";
         }
         
-        if( request.getParameter("add")!=null){
-            //if add button is pressed return the same page
+            
+            
+            if( request.getParameter("add")!=null){
             processRequest(request, response);
         }else if (request.getParameter("view")!=null) {
-            //if view button is pressed redirect to the appropriate table
-            response.sendRedirect("AccountTable");
+            response.sendRedirect("CategoryTable");
         }
     }
 
@@ -155,7 +159,7 @@ public class CreateAccount extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Create a Account Entity";
+        return "Create a C Entity";
     }
 
     private static final boolean DEBUG = true;
